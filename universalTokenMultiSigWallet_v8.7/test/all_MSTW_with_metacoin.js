@@ -52,7 +52,7 @@ contract('MetaCoin', (accounts) => {
 contract('universalTokenMultiSigWallet', async(accounts) => {
   let instanceMWST; 
   before(async () => {
-    const newowners= accounts.slice(0,2) 
+    const newowners= accounts.slice(0,3) 
     const newrequired = 2
     instanceMWST = await universalTokenMultiSigWallet.new(newowners,newrequired);
     meta = await MetaCoin.new();
@@ -153,19 +153,19 @@ const account_4 = accounts[3];
          let ethvalue=10;
 
          console.log("confirmations")
-         let transid1confirms = await instanceMWST.getConfirmations(0, { from: account_one });
+         let transid1confirms = await instanceMWST.getConfirmationCount(0, { from: account_one });
          assert.equal(
           transid1confirms,
           0,
           "Wrong number of confirmations should be 0 at beggining"
         );
-        let transid2confirms = await instanceMWST.getConfirmations(1, { from: account_one });
+        let transid2confirms = await instanceMWST.getConfirmationCount(1, { from: account_one });
         assert.equal(
           transid2confirms,
          0,
          "Wrong number of confirmations should be 0 at beggining"
        );
-       let transid3confirms = await instanceMWST.getConfirmations(2, { from: account_one });
+       let transid3confirms = await instanceMWST.getConfirmationCount(2, { from: account_one });
         assert.equal(
           transid3confirms,
          0,
@@ -178,7 +178,7 @@ const account_4 = accounts[3];
         let oconfirm2id0 = await instanceMWST.confirmTransaction(0, { from: account_two });
         let oconfirm3id0 = await instanceMWST.confirmTransaction(0, { from: account_3 });
         
-       let transid0confirms = await instanceMWST.getConfirmations(0, { from: account_one });
+       let transid0confirms = await instanceMWST.getConfirmationCount(0, { from: account_one });
         assert.equal(
           transid0confirms,
          3,
@@ -187,15 +187,18 @@ const account_4 = accounts[3];
        let oconfirm1id2 = await instanceMWST.confirmTransaction(2, { from: account_one });
        let oconfirm2id2 = await instanceMWST.confirmTransaction(2, { from: account_two });
 
-       transid2confirms = await instanceMWST.getConfirmations(2, { from: account_3 });
+       transid2confirms = await instanceMWST.getConfirmationCount(2, { from: account_3 });
        assert.equal(
-         transid1confirms,
+         transid2confirms,
         2,
         "Wrong number of confirmations for id 2. 2 is not"
       );
+      await meta.sendCoin(instanceMWST.address, 500, { from: account_one });
+      await instanceMWST.sendTransaction({from: accounts[1], value: web3.utils.toWei("10", 'ether')}) 
+
       let balanceEth = await web3.eth.getBalance(account_4);
-      let execute0id = await instanceMWST.executeTransaction(0, { from: account_one });
-      let execute2id = await instanceMWST.executeTransaction(2, { from: account_two });
+      let execute0id = await instanceMWST.executeTransaction(2, { from: account_one });
+      let execute2id = await instanceMWST.executeTransaction(0, { from: account_two });
 
      let bala  = await meta.getBalance(account_4, { from: account_4 });
       assert.notEqual(
@@ -207,7 +210,7 @@ const account_4 = accounts[3];
    let balanceEthafter = await web3.eth.getBalance(account_4);
    assert.notEqual(
     balanceEth,
-    balanceEthafter,
+    balanceEthafter-1,
    "Wrong number of eth not transfered"
  );
         
