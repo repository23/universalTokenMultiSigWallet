@@ -231,7 +231,6 @@ contract universalTokenMultiSigWallet {
     {
         confirmations[transactionId][msg.sender] = true;
         emit Confirmation(msg.sender, transactionId);
-        executeTransaction(transactionId);
     }
     
     
@@ -251,8 +250,6 @@ contract universalTokenMultiSigWallet {
     /// @param transactionId Transaction ID.
     function executeTransaction(uint transactionId)
         public
-        ownerExists(msg.sender)
-        confirmed(transactionId, msg.sender)
         notExecuted(transactionId)
     {
         if (isConfirmed(transactionId)) 
@@ -397,11 +394,8 @@ contract universalTokenMultiSigWallet {
         view
         returns (address[] memory)
     {
-        return owners
-		
+        return owners;
 
-		
-		
     }
 
     /// @dev Returns array with owner addresses, which confirmed transaction.
