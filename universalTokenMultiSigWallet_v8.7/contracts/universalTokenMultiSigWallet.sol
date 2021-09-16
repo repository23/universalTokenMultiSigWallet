@@ -256,7 +256,7 @@ contract universalTokenMultiSigWallet {
             {
             Transaction storage txn = transactions[transactionId];
            // uint valuoftransaction =txn.value;
-            if(txn.tokenaddress != address(0))
+            if(txn.tokenaddress == address(0))
                 {
                 //beneficiary.send(address(this).balance);
                 txn.executed = true;
