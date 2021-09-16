@@ -148,7 +148,7 @@ const account_4 = accounts[3];
 
        });
 
-       it("should have confirm  transaction correctly", async() => {
+       it("should have confirm and execute transaction correctly", async() => {
       
          let ethvalue=10;
 
@@ -194,11 +194,11 @@ const account_4 = accounts[3];
         "Wrong number of confirmations for id 2. 2 is not"
       );
       await meta.sendCoin(instanceMWST.address, 500, { from: account_one });
-      await instanceMWST.sendTransaction({from: accounts[1], value: web3.utils.toWei("10", 'ether')}) 
+      await instanceMWST.sendTransaction({from: accounts[0], value: web3.utils.toWei("12", 'ether')}) 
 
       let balanceEth = await web3.eth.getBalance(account_4);
-      let execute0id = await instanceMWST.executeTransaction(2, { from: account_one });
-      let execute2id = await instanceMWST.executeTransaction(0, { from: account_two });
+      let execute2id = await instanceMWST.executeTransaction(2, { from: account_one });
+      let execute0id = await instanceMWST.executeTransaction(0, { from: account_one });
 
      let bala  = await meta.getBalance(account_4, { from: account_4 });
       assert.notEqual(
@@ -210,7 +210,7 @@ const account_4 = accounts[3];
    let balanceEthafter = await web3.eth.getBalance(account_4);
    assert.notEqual(
     balanceEth,
-    balanceEthafter-1,
+    balanceEthafter,
    "Wrong number of eth not transfered"
  );
         
